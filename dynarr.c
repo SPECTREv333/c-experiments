@@ -6,6 +6,8 @@
 #include <memory.h>
 #include "dynarr.h"
 
+#define METHOD(NAME) .NAME = NAME
+
 Array init(size_t initial_size){
     Array array = { .size = initial_size, .data = NULL };
     array.data = (TYPE*)malloc(initial_size * sizeof (TYPE));
@@ -52,9 +54,9 @@ void destroy(Array* self){
 }
 
 Array_interface dynarr = {
-        .init = init,
-        .push = push,
-        .append = append,
-        .get_ref = get_ref,
-        .destroy = destroy,
+        METHOD(init),
+        METHOD(push),
+        METHOD(append),
+        METHOD(get_ref),
+        METHOD(destroy),
 };

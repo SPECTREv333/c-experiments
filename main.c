@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "dynarr.h"
+#include "ezprint.h"
 
 typedef unsigned int uint;
 
@@ -12,6 +13,9 @@ int main() {
     char* test = "Hello string";
 
     printf("%lu\n", strlen(test));
+
+    print(test);
+    print(strlen(test));
 
     dynarr.append(&array, test, strlen(test)+1);
 
