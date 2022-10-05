@@ -3,39 +3,43 @@
 //
 
 #include <stdlib.h>
-#include "stdio.h"
+#include <memory.h>
 #include "dynarr.h"
 
-Array* init(unsigned int initial_size){
-    Array* array = (Array *) calloc(1, sizeof(Array));
-    array->data = calloc(initial_size, sizeof (int));
-    if (!array->data){
-        printf("Unable to malloc(), commiting suicide...");
-        exit(1);
-    }
-    array->size = initial_size;
+Array init(size_t initial_size){
+    Array array = { .size = initial_size, .data = NULL };
+    array.data = (TYPE*)malloc(initial_size * sizeof (TYPE));
+    array.size = initial_size;
     return array;
 }
 
-void append(Array* self, int value){
-    unsigned int new_size = self->size + 1;
+void push(Array* self, TYPE value){
+    size_t new_size = self->size + 1;
 
-    int* new_ptr = (int *)realloc(self->data, new_size * sizeof(int));
+    TYPE* new_ptr = (TYPE *)realloc(self->data, new_size * sizeof(TYPE));
 
     if (new_ptr!=NULL){
         self->data = new_ptr;
         self->size++;
     } else {
         free(self->data);
-        printf("Unable to realloc(), exiting...");
-        exit(1);
     }
 
     self->data[self->size-1] = value;
-
 }
 
-int* get(Array* self, unsigned int index){
+void append(Array* self, TYPE* array, size_t array_size){
+    TYPE* new_ptr = (TYPE *) realloc(self->data, (self->size + array_size) * sizeof(TYPE));
+    if (new_ptr == NULL) {
+        free(new_ptr);
+        return;
+    }
+    memcpy(new_ptr + self->size, array, array_size * sizeof(TYPE));
+    self->data = new_ptr;
+    self->size = self->size + array_size;
+}
+
+TYPE* get_ref(Array* self, size_t index){
    if (index >= self->size){
        return NULL;
    } else {
@@ -45,12 +49,12 @@ int* get(Array* self, unsigned int index){
 
 void destroy(Array* self){
     free(self->data);
-    free(self);
 }
 
 Array_interface dynarr = {
         .init = init,
+        .push = push,
         .append = append,
-        .get = get,
+        .get_ref = get_ref,
         .destroy = destroy,
 };

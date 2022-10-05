@@ -1,43 +1,27 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "dynarr.h"
 
 typedef unsigned int uint;
 
 int main() {
 
-    // Create
-    //Array* array = dynarr.init(10);
-    Array* array = dy_init(10);
+    Array array = dynarr.init(0);
 
-    // Access
-    array->data[0] = 1;
-    // or
-    //*dynarr.get(array, array->size-1) = 2;
-    *dy_ref_get(array, array->size-1) = 2;
-    // utility macro for already de-referenced value
-    printf("%d\n", dy_val_get(array, 1));
+    char* test = "Hello string";
 
-    // Managed size
-    printf("Size: %d\n", array->size);
+    printf("%lu\n", strlen(test));
 
-    // Append (auto expansion)
-    //dynarr.append(array, 15);
-    dy_append(array, 15);
+    dynarr.append(&array, test, strlen(test)+1);
 
-    uint arr_sz = array->size;
+    char* test2 = "Ciao dueeeeeee";
 
-    printf("Size: %d\n", arr_sz);
+    dynarr.append(&array, test2, strlen(test2)+1);
 
-    for( int i = 0; i<array->size; i++){
-        printf("Element #%d: %d\n", i, dy_val_get(array, i));
-    }
+    printf("'%s'\n", array.data);
 
-    // Easy de-allocation
-    //dynarr.destroy(array);
-    dy_destroy(array);
-
-    // Checked with valgrind.
+    dynarr.destroy(&array);
 
     return 0;
 }

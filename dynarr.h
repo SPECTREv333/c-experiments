@@ -5,23 +5,23 @@
 #ifndef UNTITLED_DYNARR_H
 #define UNTITLED_DYNARR_H
 
-#define dy_init(initial_size) dynarr.init((initial_size))
-#define dy_val_get(array, index) *dynarr.get(array, index)
-#define dy_ref_get(array, index) dynarr.get(array, index)
-#define dy_append(array, value) dynarr.append(array, value)
-#define dy_destroy(array) dynarr.destroy(array)
+#ifndef TYPE
+#define TYPE char
+#endif
+
 typedef struct Array_ Array;
 
 typedef struct Array_interface_ {
-    Array* (*init)(unsigned int initial_size);
-    void (*append)(Array* self, int value);
-    int* (*get)(Array* self, unsigned int index);
+    Array (*init)(size_t initial_size);
+    void (*push)(Array* self, TYPE value);
+    void (*append)(Array* self, TYPE* array, size_t array_size);
+    TYPE* (*get_ref)(Array* self, size_t index);
     void (*destroy)(Array* self);
 } Array_interface;
 
 struct Array_ {
-    unsigned int size;
-    int *data;
+    size_t size;
+    TYPE *data;
 };
 
 extern Array_interface dynarr;
